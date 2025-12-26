@@ -1,4 +1,18 @@
+# Virtual environments
+.venv/
 venv/
+
+# Python cache
 __pycache__/
-.env
 *.pyc
+
+# Secrets
+.env
+
+# Runtime data (DO NOT COMMIT)
+chat_history.db
+memory.json
+
+# Generated images
+gemini_image_*.png
+static/gemini_image_*.png
