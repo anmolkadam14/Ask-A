@@ -1,8 +1,6 @@
-fastapi
-uvicorn[standard]
-pydantic>=2
+flask==2.0.3
 google-genai
-pillow
+python-dotenv
 SpeechRecognition
+pyaudio
 pyttsx3
-pyaudio ; platform_system == "Windows"

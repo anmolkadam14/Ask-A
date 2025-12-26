@@ -1,83 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ask-A 🤖 | AI Voice Chatbot</title>
+
 <style>
-  body {
-    font-family: "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    margin: 0;
-    padding: 0;
-    color: #fff;
-  }
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+}
 
-  #app {
-    max-width: 800px;
-    margin: 40px auto;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    padding: 20px;
-  }
+#app {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px;
+  animation: fadeIn 1s ease;
+}
 
-  h1 {
-    text-align: center;
-    color: #00e6e6;
-    letter-spacing: 1px;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-  #messages {
-    height: 400px;
-    overflow-y: auto;
-    padding: 10px;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.3);
-  }
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
-  .msg {
-    margin: 10px 0;
-    line-height: 1.4;
-  }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,77,77,0.8); }
+  70% { box-shadow: 0 0 0 15px rgba(255,77,77,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,77,77,0); }
+}
 
-  .user {
-    text-align: right;
-    color: #00d4ff;
-  }
+.hero {
+  text-align: center;
+  animation: slideUp 1s ease;
+}
 
-  .bot {
-    text-align: left;
-    color: #7CFC98;
-  }
+.hero h1 {
+  font-size: 44px;
+  color: #00e6e6;
+}
 
-  #controls {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-  }
+.hero p {
+  max-width: 850px;
+  margin: auto;
+  color: #ddd;
+}
 
-  #prompt {
-    flex: 1;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-  }
+.info-btn {
+  margin-top: 20px;
+  padding: 12px 22px;
+  border-radius: 14px;
+  border: none;
+  background: #00e6e6;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  button {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 10px;
-    background: #00e6e6;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-  }
+.info-btn:hover { background: #00bcbc; }
 
-  button:hover {
-    background: #00bcbc;
-  }
+#infoSection {
+  display: none;
+  margin-top: 30px;
+  animation: slideUp .8s ease;
+}
 
-  #financeToggle {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #ccc;
-  }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 15px;
+}
+
+.card {
+  background: rgba(255,255,255,0.1);
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+#messages {
+  margin-top: 30px;
+  height: 300px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 14px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.msg {
+  margin: 8px 0;
+  animation: slideUp .3s ease;
+}
+
+.user { text-align: right; color: #00d4ff; }
+.bot { text-align: left; color: #7cff9e; }
+
+#controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#prompt {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+}
+
+button {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #00e6e6;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover { background: #00bcbc; }
+
+.mic-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.listening {
+  background: #ff4d4d !important;
+  animation: pulse 1.5s infinite;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  color: #bbb;
+}
 </style>
+</head>
+
+<body>
+<div id="app">
+
+  <div class="hero">
+    <h1>Ask-A 🤖</h1>
+    <p>
+      Ask-A is an AI-powered chatbot that understands <b>voice and text</b>.
+      Users can give <b>voice-based instructions</b>, and the AI responds with
+      <b>intelligent conversational replies</b>.
+    </p>
+    <button class="info-btn" onclick="toggleInfo()">ℹ️ Key Features</button>
+  </div>
+
+  <div id="infoSection">
+    <div class="grid">
+      <div class="card">🎙️ <b>Voice-based User Instructions</b><br>Speech-to-Text using browser microphone</div>
+      <div class="card">🔊 <b>Intelligent Conversational Responses</b><br>AI-powered contextual replies</div>
+      <div class="card">🧠 <b>Context-Aware Memory</b><br>Remembers recent conversation</div>
+      <div class="card">🔁 <b>Cloud + Local AI Fallback</b><br>Always available even when quota is exceeded</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:35px;">💬 Chat with Ask-A</h2>
+
+  <div id="messages"></div>
+
+  <div id="controls">
+    <input id="prompt" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+    <button id="micBtn" class="mic-btn" onclick="useVoice()">🎙️</button>
+  </div>
+
+  <footer>
+    Built by <b>Anmol Kadam</b> • Ask-A AI Assistant
+  </footer>
+
+</div>
+
+<script>
+const API = location.origin;
+const messages = document.getElementById("messages");
+const input = document.getElementById("prompt");
+const micBtn = document.getElementById("micBtn");
+
+function toggleInfo() {
+  const s = document.getElementById("infoSection");
+  s.style.display = s.style.display === "none" ? "block" : "none";
+}
+
+function appendMsg(who, text, cls) {
+  const d = document.createElement("div");
+  d.className = "msg " + cls;
+  d.innerHTML = "<b>" + who + ":</b> " + text;
+  messages.appendChild(d);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function speak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  speechSynthesis.speak(u);
+}
+
+async function sendMessage() {
+  const msg = input.value.trim();
+  if (!msg) return;
+  appendMsg("You", msg, "user");
+  input.value = "";
+
+  const res = await fetch(API + "/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: msg })
+  });
+
+  const data = await res.json();
+  appendMsg("Ask-A", data.reply, "bot");
+  speak(data.reply);
+}
+
+function useVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    alert("Speech recognition not supported.");
+    return;
+  }
+
+  const rec = new SR();
+  rec.lang = "en-US";
+  micBtn.classList.add("listening");
+  rec.start();
+
+  rec.onresult = e => {
+    micBtn.classList.remove("listening");
+    const text = e.results[0][0].transcript;
+    input.value = text;
+    sendMessage();
+  };
+
+  rec.onerror = () => {
+    micBtn.classList.remove("listening");
+    appendMsg("Ask-A", "Voice recognition failed.", "bot");
+  };
+}
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
+});
+</script>
+
+</body>
+</html>
