@@ -2,254 +2,379 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ask-A 🤖 | AI Voice Chatbot</title>
+<title>Ask-A | Immersive Voice AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #fff;
+:root{
+  --neon:#00ffd5;
+  --blue:#4da6ff;
+  --bg:#05070d;
 }
 
-#app {
-  max-width: 1000px;
-  margin: auto;
-  padding: 30px;
-  animation: fadeIn 1s ease;
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  font-family:"Segoe UI",system-ui,sans-serif;
+  background:radial-gradient(circle at top,#0c1a2b,var(--bg));
+  color:#eaf6ff;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* ================= PARTICLE BACKGROUND ================= */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-3;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+/* ================= FLOATING ORB ================= */
+.orb{
+  position:fixed;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:140px;height:140px;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--neon),transparent 65%);
+  box-shadow:0 0 90px rgba(0,255,213,.7);
+  animation:breathe 4s ease-in-out infinite;
+  z-index:-1;
+}
+@keyframes breathe{
+  0%,100%{transform:translateX(-50%) scale(1)}
+  50%{transform:translateX(-50%) scale(1.1)}
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255,77,77,0.8); }
-  70% { box-shadow: 0 0 0 15px rgba(255,77,77,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,77,77,0); }
+/* ================= CONTAINER ================= */
+.app{
+  max-width:1100px;
+  margin:auto;
+  padding:220px 16px 120px;
 }
 
-.hero {
-  text-align: center;
-  animation: slideUp 1s ease;
+/* ================= HEADER ================= */
+.header{text-align:center;margin-bottom:40px}
+.logo{
+  font-size:60px;
+  font-weight:700;
+  color:var(--neon);
+  letter-spacing:4px;
+  text-shadow:0 0 30px rgba(0,255,213,.6)
+}
+.tagline{
+  max-width:820px;
+  margin:16px auto 0;
+  color:#b9c8e6;
+  font-size:16px;
 }
 
-.hero h1 {
-  font-size: 44px;
-  color: #00e6e6;
+/* ================= CHAT PANEL ================= */
+.chat{
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:26px;
+  box-shadow:0 25px 70px rgba(0,0,0,.7);
+  padding:26px;
+  backdrop-filter:blur(14px);
 }
 
-.hero p {
-  max-width: 850px;
-  margin: auto;
-  color: #ddd;
+.messages{
+  height:320px;
+  overflow-y:auto;
 }
 
-.info-btn {
-  margin-top: 20px;
-  padding: 12px 22px;
-  border-radius: 14px;
-  border: none;
-  background: #00e6e6;
-  font-weight: bold;
-  cursor: pointer;
+/* ================= MESSAGES ================= */
+.msg{
+  max-width:75%;
+  margin:14px 0;
+  padding:16px 20px;
+  border-radius:20px;
+  line-height:1.6;
+  animation:rise .4s ease;
+}
+@keyframes rise{
+  from{transform:translateY(18px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+.user{
+  margin-left:auto;
+  background:linear-gradient(135deg,#1a9cff,#0048ff);
+  color:#fff;
+  border-bottom-right-radius:6px;
+}
+.bot{
+  background:linear-gradient(135deg,#0b3a3a,#0f5b5b);
+  color:#d6fff7;
+  border-bottom-left-radius:6px;
+  box-shadow:inset 0 0 0 1px rgba(0,255,213,.2);
 }
 
-.info-btn:hover { background: #00bcbc; }
-
-#infoSection {
-  display: none;
-  margin-top: 30px;
-  animation: slideUp .8s ease;
+/* ================= THINKING WAVE ================= */
+.thinking{
+  display:none;
+  margin:10px 0;
+  height:26px;
+}
+.wave{display:flex;gap:4px}
+.wave span{
+  width:6px;height:20px;
+  background:var(--neon);
+  animation:wave 1.2s infinite ease-in-out;
+}
+.wave span:nth-child(2){animation-delay:.1s}
+.wave span:nth-child(3){animation-delay:.2s}
+.wave span:nth-child(4){animation-delay:.3s}
+@keyframes wave{
+  0%,100%{transform:scaleY(.4)}
+  50%{transform:scaleY(1)}
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-  gap: 15px;
+/* ================= INPUT ================= */
+.controls{
+  display:flex;
+  gap:12px;
+  margin-top:18px;
+}
+.input{
+  flex:1;
+  padding:16px 20px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.35);
+  color:#fff;
+  outline:none;
+}
+.btn{
+  padding:0 22px;
+  border-radius:18px;
+  border:none;
+  background:var(--neon);
+  color:#002d28;
+  font-weight:700;
+  cursor:pointer;
+}
+.mic{
+  width:56px;
+  border-radius:50%;
+  font-size:22px;
+}
+.listening{
+  background:#ff4d4d!important;
+  animation:pulse 1.4s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(255,77,77,.7)}
+  70%{box-shadow:0 0 0 22px rgba(255,77,77,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,77,77,0)}
 }
 
-.card {
-  background: rgba(255,255,255,0.1);
-  padding: 18px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+/* ================= DETAILS ================= */
+.details-wrap{text-align:center;margin-top:80px}
+.details-btn{
+  background:transparent;
+  border:1px solid var(--neon);
+  color:var(--neon);
+  padding:16px 42px;
+  border-radius:40px;
+  font-size:16px;
+  cursor:pointer;
+  box-shadow:0 0 30px rgba(0,255,213,.35);
+}
+.details{display:none;margin-top:28px}
+.features{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+.feature{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.6);
 }
 
-#messages {
-  margin-top: 30px;
-  height: 300px;
-  background: rgba(0,0,0,0.35);
-  border-radius: 14px;
-  padding: 12px;
-  overflow-y: auto;
+/* ================= SCROLL HINT ================= */
+.scroll-hint{
+  position:fixed;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:22px;
+  color:rgba(255,255,255,.7);
+  animation:bounce 1.6s infinite;
+  z-index:10;
+  pointer-events:none;
 }
-
-.msg {
-  margin: 8px 0;
-  animation: slideUp .3s ease;
+@keyframes bounce{
+  0%,100%{transform:translate(-50%,0);opacity:.6}
+  50%{transform:translate(-50%,-10px);opacity:1}
 }
+.hide-hint{display:none}
 
-.user { text-align: right; color: #00d4ff; }
-.bot { text-align: left; color: #7cff9e; }
-
-#controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-#prompt {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-}
-
-button {
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: none;
-  background: #00e6e6;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:hover { background: #00bcbc; }
-
-.mic-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 20px;
-}
-
-.listening {
-  background: #ff4d4d !important;
-  animation: pulse 1.5s infinite;
-}
-
-footer {
-  text-align: center;
-  margin-top: 40px;
-  color: #bbb;
+/* ================= MOBILE ================= */
+@media(max-width:600px){
+  .orb{width:90px;height:90px;top:60px}
+  .logo{font-size:44px}
+  .messages{height:260px}
 }
 </style>
 </head>
 
 <body>
-<div id="app">
 
-  <div class="hero">
-    <h1>Ask-A 🤖</h1>
-    <p>
-      Ask-A is an AI-powered chatbot that understands <b>voice and text</b>.
-      Users can give <b>voice-based instructions</b>, and the AI responds with
-      <b>intelligent conversational replies</b>.
-    </p>
-    <button class="info-btn" onclick="toggleInfo()">ℹ️ Key Features</button>
-  </div>
+<canvas id="particles"></canvas>
+<div class="orb" id="orb"></div>
+<div id="scrollHint" class="scroll-hint">⬇️</div>
 
-  <div id="infoSection">
-    <div class="grid">
-      <div class="card">🎙️ <b>Voice-based User Instructions</b><br>Speech-to-Text using browser microphone</div>
-      <div class="card">🔊 <b>Intelligent Conversational Responses</b><br>AI-powered contextual replies</div>
-      <div class="card">🧠 <b>Context-Aware Memory</b><br>Remembers recent conversation</div>
-      <div class="card">🔁 <b>Cloud + Local AI Fallback</b><br>Always available even when quota is exceeded</div>
+<div class="app">
+
+  <div class="header">
+    <div class="logo">ASK-A</div>
+    <div class="tagline">
+      A living AI interface with voice intelligence,
+      real-time visuals, and immersive interaction.
     </div>
   </div>
 
-  <h2 style="margin-top:35px;">💬 Chat with Ask-A</h2>
+  <div class="chat">
+    <div id="messages" class="messages"></div>
 
-  <div id="messages"></div>
+    <div id="thinking" class="thinking">
+      <div class="wave">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
 
-  <div id="controls">
-    <input id="prompt" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
-    <button id="micBtn" class="mic-btn" onclick="useVoice()">🎙️</button>
+    <div class="controls">
+      <input id="prompt" class="input" placeholder="Ask anything…" />
+      <button class="btn" onclick="sendMessage()">Send</button>
+      <button id="micBtn" class="btn mic" onclick="useVoice()">🎙️</button>
+    </div>
   </div>
 
-  <footer>
-    Built by <b>Anmol Kadam</b> • Ask-A AI Assistant
-  </footer>
+  <div class="details-wrap">
+    <button class="details-btn" onclick="toggleDetails()">View Project Details</button>
+    <div id="details" class="details">
+      <div class="features">
+        <div class="feature">🌌 Particle network background</div>
+        <div class="feature">🧠 AI thinking wave animation</div>
+        <div class="feature">🎧 Audio-reactive visuals</div>
+        <div class="feature">🎙️ Voice-based interaction</div>
+        <div class="feature">🔊 Intelligent AI responses</div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
 <script>
-const API = location.origin;
-const messages = document.getElementById("messages");
-const input = document.getElementById("prompt");
-const micBtn = document.getElementById("micBtn");
-
-function toggleInfo() {
-  const s = document.getElementById("infoSection");
-  s.style.display = s.style.display === "none" ? "block" : "none";
+/* ================= PARTICLES ================= */
+const c=document.getElementById("particles"),ctx=c.getContext("2d");
+let w,h,pts=[];
+function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+onresize=resize;resize();
+for(let i=0;i<80;i++)pts.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6});
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  for(let i of pts){
+    i.x+=i.vx;i.y+=i.vy;
+    if(i.x<0||i.x>w)i.vx*=-1;
+    if(i.y<0||i.y>h)i.vy*=-1;
+    ctx.fillStyle="#00ffd5";ctx.fillRect(i.x,i.y,2,2);
+    for(let j of pts){
+      const d=Math.hypot(i.x-j.x,i.y-j.y);
+      if(d<120){
+        ctx.strokeStyle=`rgba(0,255,213,${1-d/120})`;
+        ctx.beginPath();ctx.moveTo(i.x,i.y);ctx.lineTo(j.x,j.y);ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
 }
+draw();
 
-function appendMsg(who, text, cls) {
-  const d = document.createElement("div");
-  d.className = "msg " + cls;
-  d.innerHTML = "<b>" + who + ":</b> " + text;
+/* ================= CHAT ================= */
+const API=location.origin;
+const messages=document.getElementById("messages");
+const input=document.getElementById("prompt");
+const micBtn=document.getElementById("micBtn");
+const thinking=document.getElementById("thinking");
+const orb=document.getElementById("orb");
+const hint=document.getElementById("scrollHint");
+
+function append(text,cls){
+  const d=document.createElement("div");
+  d.className="msg "+cls;
+  d.textContent=text;
   messages.appendChild(d);
-  messages.scrollTop = messages.scrollHeight;
+  messages.scrollTop=messages.scrollHeight;
 }
 
-function speak(text) {
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US";
-  speechSynthesis.speak(u);
+function scrollToChat(){
+  document.querySelector(".chat").scrollIntoView({behavior:"smooth"});
 }
 
-async function sendMessage() {
-  const msg = input.value.trim();
-  if (!msg) return;
-  appendMsg("You", msg, "user");
-  input.value = "";
+async function sendMessage(){
+  const msg=input.value.trim();
+  if(!msg)return;
+  scrollToChat();
+  append(msg,"user");
+  input.value="";
+  thinking.style.display="block";
 
-  const res = await fetch(API + "/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt: msg })
+  const res=await fetch(API+"/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({prompt:msg})
   });
-
-  const data = await res.json();
-  appendMsg("Ask-A", data.reply, "bot");
+  const data=await res.json();
+  thinking.style.display="none";
+  append(data.reply,"bot");
   speak(data.reply);
 }
 
-function useVoice() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    alert("Speech recognition not supported.");
-    return;
-  }
-
-  const rec = new SR();
-  rec.lang = "en-US";
-  micBtn.classList.add("listening");
-  rec.start();
-
-  rec.onresult = e => {
-    micBtn.classList.remove("listening");
-    const text = e.results[0][0].transcript;
-    input.value = text;
-    sendMessage();
-  };
-
-  rec.onerror = () => {
-    micBtn.classList.remove("listening");
-    appendMsg("Ask-A", "Voice recognition failed.", "bot");
-  };
+function speak(text){
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-US";
+  u.onstart=()=>orb.style.boxShadow="0 0 140px rgba(0,255,213,.9)";
+  u.onend=()=>orb.style.boxShadow="0 0 90px rgba(0,255,213,.7)";
+  speechSynthesis.speak(u);
 }
 
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
+function useVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("Use Chrome for voice support");return;}
+  scrollToChat();
+  const r=new SR();
+  r.lang="en-US";
+  micBtn.classList.add("listening");
+  r.start();
+  r.onresult=e=>{
+    micBtn.classList.remove("listening");
+    input.value=e.results[0][0].transcript;
+    sendMessage();
+  };
+  r.onerror=()=>micBtn.classList.remove("listening");
+}
+
+function toggleDetails(){
+  const d=document.getElementById("details");
+  d.style.display=d.style.display==="block"?"none":"block";
+}
+
+addEventListener("scroll",()=>{
+  if(scrollY>80)hint.classList.add("hide-hint");
+});
+
+input.addEventListener("keydown",e=>{
+  if(e.key==="Enter")sendMessage();
 });
 </script>
 
